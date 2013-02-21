@@ -1,0 +1,83 @@
+<div class="mr-president-form">
+    <form id="president-form" method="post" enctype="multipart/form-data">
+        <ol>
+            <li class="form-vote">
+                <h2>This project has now concluded. Thank you for your submissions.</h2>
+            	<label for="voted">Dear Mr. President,</label>
+                <ul>
+                    <li><input type="radio" name="voted" value="i-voted-for-you" disabled="disabled">I voted for you.</li>
+                    <li><input type="radio" name="voted" value="i-didnt-vote-for-you" disabled="disabled">I didn't vote for you.</li>
+                    <li><input type="radio" name="voted" value="i-didnt-vote" disabled="disabled">I didn't vote.</li>
+                    <li><input type="radio" name="voted" value="id-rather-not-say-how-i-voted" checked="checked" disabled="disabled">I'd rather not say how I voted.</li>
+                </ul>
+            </li>
+            <li class="form-photo">
+                <label class="header">Please don&rsquo;t forget...</label>
+                <img src="img/sample-photo-2.jpg" alt="Sample Photo" class="sample-photo" />
+                <label for="image" class="instructions">
+                	<strong>Step 1:</strong> Take a photo of yourself holding a sign with a key word or phrase you want the president to remember.
+                </label>
+                <input type="file" name="image" width="90" disabled="disabled" accept="image/*" required>
+            </li>
+            <li class="form-message">
+                <label for="message" class="instructions">
+                	<strong>Step 2:</strong> Explain why this matters to you.
+                </label>
+                <textarea name="message" disabled="disabled" required></textarea>
+            </li>
+            <li class="form-signature">
+            <label for="signed_name">Signed,</label>
+                <input type="text" name="signed_name" disabled="disabled" placeholder="Your Name" required></input> from
+                <input type="text" name="location" disabled="disabled" placeholder="Your City And State" required></input>
+            </li>
+            <li class="form-submit">
+                <span class="gentle-reminder" style="display:none;">Please add a photo, an explanation, your name and where you're from. Thanks!<br/></span>
+                <button type="submit" class="btn" disabled="disabled">Send Us Your Postcard</button>
+            </li>
+        </ol>
+    </form>
+    <!--[if IE]>
+    <script type="text/javascript">
+        /*
+        * Handle simple form validation for browsers that do not support
+        * the HTML5 "required" attribute on form elements.
+        */
+        $('#president-form').submit(function(event){
+            var $this = $(this);
+            var inputs = [];
+            inputs.push($this.find('textarea').text());
+            inputs.push($this.find("input[type='file']").attr('value'));
+            inputs.push($this.find("input[name='signed_name']").attr('value'));
+            inputs.push($this.find("input[name='location']").attr('value'));
+            _.each(inputs, function(input){
+                if (input === '') {
+                    event.preventDefault();
+                    $this.find('span.gentle-reminder').show();
+                }
+            });
+        });
+    </script>
+    <![endif]-->
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#president-form').submit(function(e) {
+                var btn = $('.form-submit button');
+                
+                btn.text('Sending, please wait...');
+                btn.attr('disabled', 'disabled');
+
+                return true;
+            });
+
+            if (/iP(hone|od|ad)/.test(navigator.platform)) {
+                var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
+                var version = parseInt(v[1]);
+    
+                if (version < 6) {
+                    $('.mr-president-form').html('<p>Sorry, iOS versions older than 6 are not supported.');
+                }
+            }
+        });
+    </script>
+</div>
