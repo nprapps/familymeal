@@ -19,6 +19,13 @@ def index():
     """
     return render_template('index.html', **make_context())
 
+@app.route('/tumblr-form.html')
+def index():
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    return render_template('tumblr-form.html', **make_context())
+
 # Render LESS files on-demand
 @app.route('/less/<string:filename>')
 def _less(filename):
@@ -71,4 +78,4 @@ def urlencode_filter(s):
     return Markup(s)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8001, debug=app_config.DEBUG)
+    app.run(host='0.0.0.0', port=8000, debug=app_config.DEBUG)

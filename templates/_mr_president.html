@@ -1,38 +1,37 @@
 <div class="mr-president-form">
-    <form id="president-form" method="post" enctype="multipart/form-data">
+    <form id="president-form" method="post" enctype="multipart/form-data" action="http://127.0.0.1:8001/family-meal/">
         <ol>
             <li class="form-vote">
-                <h2>This project has now concluded. Thank you for your submissions.</h2>
-            	<label for="voted">Dear Mr. President,</label>
+            	<label for="voted">This is my family meal:</label>
                 <ul>
-                    <li><input type="radio" name="voted" value="i-voted-for-you" disabled="disabled">I voted for you.</li>
-                    <li><input type="radio" name="voted" value="i-didnt-vote-for-you" disabled="disabled">I didn't vote for you.</li>
-                    <li><input type="radio" name="voted" value="i-didnt-vote" disabled="disabled">I didn't vote.</li>
-                    <li><input type="radio" name="voted" value="id-rather-not-say-how-i-voted" checked="checked" disabled="disabled">I'd rather not say how I voted.</li>
+                    <li><input type="radio" name="voted" value="i-voted-for-you">I ate vegetables.</li>
+                    <li><input type="radio" name="voted" value="i-didnt-vote-for-you">I didn't eat vegetables.</li>
+                    <li><input type="radio" name="voted" value="i-didnt-vote">I am not sure what a vegatable is.</li>
+                    <li><input type="radio" name="voted" value="id-rather-not-say-how-i-voted" checked="checked">Isn't cheese a vegetable?</li>
                 </ul>
             </li>
             <li class="form-photo">
-                <label class="header">Please don&rsquo;t forget...</label>
+                <label class="header">This is my confession ...</label>
                 <img src="img/sample-photo-2.jpg" alt="Sample Photo" class="sample-photo" />
                 <label for="image" class="instructions">
-                	<strong>Step 1:</strong> Take a photo of yourself holding a sign with a key word or phrase you want the president to remember.
+                	<strong>Step 1:</strong> Take a photo of your family's meal tonight.
                 </label>
-                <input type="file" name="image" width="90" disabled="disabled" accept="image/*" required>
+                <input type="file" name="image" width="90" accept="image/*" required>
             </li>
             <li class="form-message">
                 <label for="message" class="instructions">
-                	<strong>Step 2:</strong> Explain why this matters to you.
+                	<strong>Step 2:</strong> Explain what you ate and why.
                 </label>
-                <textarea name="message" disabled="disabled" required></textarea>
+                <textarea name="message" required></textarea>
             </li>
             <li class="form-signature">
             <label for="signed_name">Signed,</label>
-                <input type="text" name="signed_name" disabled="disabled" placeholder="Your Name" required></input> from
-                <input type="text" name="location" disabled="disabled" placeholder="Your City And State" required></input>
+                <input type="text" name="signed_name" placeholder="Your Initials" required></input> from
+                <input type="text" name="location" placeholder="Your City And State" required></input>
             </li>
             <li class="form-submit">
-                <span class="gentle-reminder" style="display:none;">Please add a photo, an explanation, your name and where you're from. Thanks!<br/></span>
-                <button type="submit" class="btn" disabled="disabled">Send Us Your Postcard</button>
+                <span class="gentle-reminder" style="display:none;">Please add a photo, an explanation, your initials and where you're from. Thanks!<br/></span>
+                <button type="submit" class="btn">Send Us Your Confession</button>
             </li>
         </ol>
     </form>
@@ -63,7 +62,7 @@
         $(document).ready(function() {
             $('#president-form').submit(function(e) {
                 var btn = $('.form-submit button');
-                
+
                 btn.text('Sending, please wait...');
                 btn.attr('disabled', 'disabled');
 
@@ -73,7 +72,7 @@
             if (/iP(hone|od|ad)/.test(navigator.platform)) {
                 var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
                 var version = parseInt(v[1]);
-    
+
                 if (version < 6) {
                     $('.mr-president-form').html('<p>Sorry, iOS versions older than 6 are not supported.');
                 }

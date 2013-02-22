@@ -9,19 +9,16 @@
 {% endblock %}
 
 {% block top_content %}
-    <h1>Inauguration 2013</h1>
-    {% include '_radio.html' %}
+    <h1>{{ PROJECT_NAME }}</h1>
 {% endblock %}
 
 {% block main_content %}
-    <div id="live-chat" style="display:none;"></div>
-
 	<div id="mr-president">
 		<div class="mr-president-topper">
 			<div class="container">
 				<div class="row">
 					<div class="span4">
-						<h2>Dear Mr. President</h2>
+						<h2>{{ PROJECT_NAME }}</h2>
 						<p class="prompt">President Obama has taken the oath of office, and whether you voted for him or not, he's everybody's president. What do you want him to remember in his second term?</p>
 						<p><a href="#mr-president-modal" role="button" class="modal-btn" data-toggle="modal"><span></span>Send Us Your Postcard</a></p>
 					</div>

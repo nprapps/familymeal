@@ -9,20 +9,22 @@ They will be exposed to users. Use environment variables instead.
 
 import os
 
-PROJECT_NAME = 'NEW_PROJECT_NAME'
-DEPLOYED_NAME = PROJECT_NAME 
+PROJECT_NAME = 'Family Meal'
+DEPLOYED_NAME = 'family-meal'
 
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
-PRODUCTION_SERVERS = ['cron.nprapps.org']
+PRODUCTION_SERVERS = ['54.245.228.214']
 
 STAGING_S3_BUCKETS = ['stage-apps.npr.org']
-STAGING_SERVERS = ['cron-staging.nprapps.org']
+STAGING_SERVERS = ['54.245.225.88']
 
 S3_BUCKETS = []
 SERVERS = []
-DEBUG = True 
+DEBUG = True
 
-PROJECT_DESCRIPTION = 'foo'
+TUMBLR_KEY = 'Cxp2JzyA03QxmQixf7Fee0oIYaFtBTTHKzRA0AveHlh094bwDH'
+
+PROJECT_DESCRIPTION = 'This is where the description would go.'
 SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], DEPLOYED_NAME)
 
 TWITTER = {
@@ -54,14 +56,19 @@ def configure_targets(deployment_target):
     global SERVERS
     global DEBUG
 
+
     if deployment_target == 'production':
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
         SERVERS = PRODUCTION_SERVERS
         DEBUG = False
+        TUMBLR_URL = 'family-meal-production.tumblr.com'
+        TUMBLR_BLOG_ID = 'family-meal-production'
     else:
         S3_BUCKETS = STAGING_S3_BUCKETS
         SERVERS = STAGING_SERVERS
         DEBUG = True
+        TUMBLR_URL = 'family-meal-staging.tumblr.com'
+        TUMBLR_BLOG_ID = 'family-meal-staging'
 
 DEPLOYMENT_TARGET = os.environ.get('DEPLOYMENT_TARGET', None)
 

@@ -12,7 +12,7 @@ app = Flask(app_config.PROJECT_NAME)
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
 
-@app.route('/dear-mr-president/', methods=['POST'])
+@app.route('/family-meal/', methods=['POST'])
 def _post_to_tumblr():
     """
     Handles the POST to Tumblr.
@@ -67,4 +67,4 @@ def _post_to_tumblr():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=app_config.DEBUG)
+    app.run(host='0.0.0.0', port=8001, debug=app_config.DEBUG)
