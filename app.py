@@ -19,20 +19,6 @@ def index():
     """
     return render_template('index.html', **make_context())
 
-@app.route('/widget.html')
-def widget():
-    """
-    Embeddable widget example page.
-    """
-    return render_template('widget.html', **make_context())
-
-@app.route('/test_widget.html')
-def test_widget():
-    """
-    Example page displaying widget at different embed sizes.
-    """
-    return render_template('test_widget.html', **make_context())
-
 # Render LESS files on-demand
 @app.route('/less/<string:filename>')
 def _less(filename):
@@ -58,7 +44,7 @@ def _templates_js():
 def _app_config_js():
     config = flatten_app_config()
     js = 'window.APP_CONFIG = ' + json.dumps(config)
-    
+
     return js, 200, { 'Content-Type': 'application/javascript' }
 
 # Server arbitrary static files on-demand
@@ -78,11 +64,11 @@ def urlencode_filter(s):
     """
     if type(s) == 'Markup':
         s = s.unescape()
-        
+
     s = s.encode('utf8')
     s = urllib.quote_plus(s)
 
     return Markup(s)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=app_config.DEBUG)
+    app.run(host='0.0.0.0', port=8001, debug=app_config.DEBUG)

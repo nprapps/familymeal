@@ -1,8 +1,6 @@
 {% extends '_base.html' %}
 
 {% block extra_css %}
-    {{ CSS.push('less/app-radio.less') }}
-    {{ CSS.push('less/app-chat.less') }}
     {{ CSS.push('less/app-mr-president.less') }}
 {% endblock %}
 
@@ -42,7 +40,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<div id="mr-president-modal" class="modal hide fade">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -54,7 +52,7 @@
 			<p class="legalese">By submitting an image, you certify that you created, or have ownership of the work. You retain the copyright in the image, but grant to NPR a non-exclusive, perpetual right to use the image, without payment and without further notice, on NPR's website, and in any other current or future NPR services (including websites, mobile services, applications and publications, anywhere in the world that NPR may offer these services). This right includes the right to copy, transmit, display, distribute, create derivative works of, and/or adapt the image. NPR also has the right to distribute and/or sublicense the image to its Member Stations, end users and other third parties in connection with NPR's distribution and/or sublicensing of related content. You grant NPR the right to use your name in a credit for the image and you agree that you have provided NPR accurate credit information.</p>
 		</div>
 	</div>
-	
+
 	<div id="credits">
 		<div class="container">
 			<div class="row">
@@ -69,9 +67,5 @@
 
 {% block extra_foot_js %}
     {{ JS.push('js/lib/jquery.smooth-scroll.js') }}
-    {{ JS.push('js/auth.js') }}
-    {{ JS.push('js/app-radio.js') }}
     {{ JS.push('js/app-photo-feed.js') }}
-    {{ JS.push('js/chat.js') }}
-    {{ JS.push('js/chat-widget.js') }}
 {% endblock %}
