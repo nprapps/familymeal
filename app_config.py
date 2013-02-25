@@ -15,7 +15,7 @@ DEPLOYED_NAME = 'familymeal'
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
 PRODUCTION_SERVERS = ['50.112.202.166']
 
-STAGING_S3_BUCKETS = ['apps.npr.org']
+STAGING_S3_BUCKETS = ['stage-apps.npr.org']
 STAGING_SERVERS = ['54.245.198.194']
 
 S3_BUCKETS = []
