@@ -1,26 +1,17 @@
 <div class="mr-president-form">
     <form id="president-form" method="post" enctype="multipart/form-data" action="http://127.0.0.1:8001/family-meal/">
         <ol>
-            <li class="form-vote">
-            	<label for="voted">This is my family meal:</label>
-                <ul>
-                    <li><input type="radio" name="voted" value="i-voted-for-you">I ate vegetables.</li>
-                    <li><input type="radio" name="voted" value="i-didnt-vote-for-you">I didn't eat vegetables.</li>
-                    <li><input type="radio" name="voted" value="i-didnt-vote">I am not sure what a vegatable is.</li>
-                    <li><input type="radio" name="voted" value="id-rather-not-say-how-i-voted" checked="checked">Isn't cheese a vegetable?</li>
-                </ul>
-            </li>
             <li class="form-photo">
                 <label class="header">This is my confession ...</label>
                 <img src="img/sample-photo-2.jpg" alt="Sample Photo" class="sample-photo" />
                 <label for="image" class="instructions">
-                	<strong>Step 1:</strong> Take a photo of your family's meal tonight.
+                	Before you all dig in tonight, snap one photo that shows what's on everybody's plate. Upload that here.
                 </label>
                 <input type="file" name="image" width="90" accept="image/*" required>
             </li>
             <li class="form-message">
                 <label for="message" class="instructions">
-                	<strong>Step 2:</strong> Explain what you ate and why.
+                	Tell us a bit about who's eating what and why. Got a tip for getting dinner on the table quickly? Share that, too. We're all in this together.
                 </label>
                 <textarea name="message" required></textarea>
             </li>
