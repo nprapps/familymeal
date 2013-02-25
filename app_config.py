@@ -10,13 +10,13 @@ They will be exposed to users. Use environment variables instead.
 import os
 
 PROJECT_NAME = 'Family Meal'
-DEPLOYED_NAME = 'family-meal'
+DEPLOYED_NAME = 'familymeal'
 
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
 PRODUCTION_SERVERS = ['54.245.228.214']
 
 STAGING_S3_BUCKETS = ['apps.npr.org']
-STAGING_SERVERS = ['54.245.225.88']
+STAGING_SERVERS = ['54.245.198.194']
 
 S3_BUCKETS = []
 SERVERS = []
