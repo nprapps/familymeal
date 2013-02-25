@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import datetime
 import os
 import re
 import unicodedata
@@ -98,9 +99,27 @@ def _post_to_tumblr():
         )
     }
 
-    tumblr_post = t.post('post', blog_url="staging-family-meal.tumblr.com", params=params)
+    tumblr_dict = {}
+    tumblr_dict['timestamp'] = datetime.datetime.now()
 
-    return redirect(u"http://%s/%s#posts" % (app_config.TUMBLR_URL, tumblr_post['id']), code=301)
+    try:
+        tumblr_post = t.post('post', blog_url="staging-family-meal.tumblr.com", params=params)
+        tumblr_dict['tumblr_id'] = tumblr_post['id']
+        tumblr_dict['tumblr_url'] = u"http://%s/%s" % (app_config.TUMBLR_URL, tumblr_post['id'])
+        tumblr_dict['result'] = {'code': 200, 'message': 'success'}
+
+        return redirect(u"http://%s/%s#posts" % (app_config.TUMBLR_URL, tumblr_post['id']), code=301)
+
+    except TumblpyRateLimitError:
+        tumblr_dict['result'] = {'code': 403, 'message': 'failed'}
+
+        return 'OWCH THAT HURTS!'
+
+    except:
+        tumblr_dict['result'] = {'code': 400, 'message': 'failed'}
+
+        return 'GENERIC FAILURE!'
+
 
 
 if __name__ == '__main__':
