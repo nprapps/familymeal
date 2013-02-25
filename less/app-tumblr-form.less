@@ -46,9 +46,8 @@ a {
 	ul > li {
 		padding: 0;
 		margin: 0 0 5px 0;
-	}
-	ul > li:hover {
-		background-color: #eee;
+		
+		&:hover { background-color: #eee; }
 	}
 	label {
 		font-weight: bold;
@@ -77,6 +76,8 @@ a {
 	input {
 		font: 13px/1.5 Arial, Helvetica, sans-serif;
 		color: #111;
+		
+		&.signed-name { width: 70px; }
 	}
 	input[type='text'] {
 		padding: 5px 10px;
