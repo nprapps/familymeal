@@ -80,6 +80,13 @@
             }
             #blog_info h1 a { color: #555; }
             #blog_info .description { color: #787878; }
+            #blog_info p.project-credits {
+            	color: #999;
+            	margin-top: 15px;
+            	margin-bottom: 0;
+            	font-size: 11px;
+            	font-style: italic;
+            }
 
             #dmp-form {
                 color: #fff;
@@ -973,6 +980,7 @@
                 <section id="blog_info">
                     {block:IfShowBlogTitle}<h1><a href="/">{Title}</a></h1>{/block:IfShowBlogTitle}
                     {block:IfShowBlogDescription}{block:Description}<div class="cont description group">{Description}</div>{/block:Description}{/block:IfShowBlogDescription}
+                    {block:IndexPage}<p class="project-credits">Credits: Brian Boyer, Jeremy Bowers, Ben de la Cruz, Maria Godoy, Alyson Hurt, Kate Myers, Katie Zhu / NPR</p>{/block:IndexPage}
                 </section>
 
                 <aside id="sidebar">
@@ -1551,6 +1559,9 @@
             $dmp_header.click(function() {
                 $dmp_frame.slideToggle();
             });
+            if ($('body').hasClass('index-page')) {
+            	$dmp_header.trigger('click');
+            }
         });
         </script>
 
