@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
 import os
-import json
 import re
 
 import boto
 from boto.s3.key import Key
 
-from flask import Flask, redirect, Request
+from flask import Flask, redirect
 from tumblpy import Tumblpy
 
 import app_config
@@ -77,10 +76,12 @@ def _post_to_tumblr():
         'type': 'photo',
         'caption': caption,
         'tags': u"%s" % request.form['voted'].replace('-', ''),
-        'source': 'http://%s.s3.amazonaws.com/%s/tmp/%s' % (app_config.S3_BUCKETS[0], app_config.DEPLOYED_NAME, request.files['image'].filename)
+        'source': 'http://%s.s3.amazonaws.com/%s/tmp/%s' % (
+            app_config.S3_BUCKETS[0],
+            app_config.DEPLOYED_NAME,
+            request.files['image'].filename
+        )
     }
-
-    print params
 
     tumblr_post = t.post('post', blog_url="staging-family-meal.tumblr.com", params=params)
 
