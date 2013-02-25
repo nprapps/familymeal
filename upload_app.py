@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 
 import os
+import json
 import re
 
-from flask import Flask, redirect
+import boto
+from boto.s3.key import Key
+
+from flask import Flask, redirect, Request
 from tumblpy import Tumblpy
 
 import app_config
@@ -39,7 +43,7 @@ def _post_to_tumblr():
         value = re.sub(r'\r\n|\r|\n', '\n', value)
         return value.replace('\n', '<br />')
 
-    caption = u"<p class='intro'>Dear Mr. President,</p><p class='voted' data-vote-type='%s'>%s.</p><p class='message'>%s</p><p class='signature-name'>Signed,<br/>%s from %s</p><p class='footnote'>What do <em>you</em> want President Obama to remember in his second term? Share your message at <a href='http://inauguration2013.tumblr.com/'>NPR's Dear Mr. President</a>.</p>" % (
+    caption = u"%s %s %s %s %s" % (
         request.form['voted'],
         clean(request.form['voted']),
         strip_breaks(strip_html(request.form['message'])),
@@ -53,15 +57,32 @@ def _post_to_tumblr():
         oauth_token=os.environ['TUMBLR_OAUTH_TOKEN'],
         oauth_token_secret=os.environ['TUMBLR_OAUTH_TOKEN_SECRET'])
 
-    try:
-        tumblr_post = t.post('post', blog_url=app_config.TUMBLR_URL, params={
-            'type': 'photo',
-            'caption': caption,
-            'tags': u"%s" % request.form['voted'].replace('-', ''),
-            'data': request.files['image']
-        })
-    except:
-        return 'Sorry, we\'re probably over capacity. Please try again later.'
+    for s3_bucket in app_config.S3_BUCKETS:
+        conn = boto.connect_s3()
+        bucket = conn.get_bucket(s3_bucket)
+        headers = {
+            'Content-Type': request.files['image'].content_type,
+            'Cache-Control': 'public, max-age=31536000'
+        }
+        policy = 'public-read'
+
+        k = Key(bucket)
+        k.key = '%s/tmp/%s' % (app_config.DEPLOYED_NAME, request.files['image'].filename)
+        k.set_contents_from_string(
+            request.files['image'].getvalue(),
+            headers=headers,
+            policy=policy)
+
+    params = {
+        'type': 'photo',
+        'caption': caption,
+        'tags': u"%s" % request.form['voted'].replace('-', ''),
+        'source': 'http://%s.s3.amazonaws.com/%s/tmp/%s' % (app_config.S3_BUCKETS[0], app_config.DEPLOYED_NAME, request.files['image'].filename)
+    }
+
+    print params
+
+    tumblr_post = t.post('post', blog_url="staging-family-meal.tumblr.com", params=params)
 
     return redirect(u"http://%s/%s#posts" % (app_config.TUMBLR_URL, tumblr_post['id']), code=301)
 

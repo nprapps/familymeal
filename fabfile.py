@@ -8,6 +8,7 @@ from fabric.api import *
 import app
 import app_config
 from etc import github
+import outputs
 
 """
 Base configuration
@@ -256,6 +257,13 @@ def deploy(remote='origin'):
 
     if env.get('deploy_to_servers', False):
         checkout_latest(remote)
+
+
+"""
+App-Specific Commands
+"""
+def generate_new_oauth_tokens():
+    outputs.generate_new_oauth_tokens()
 
 """
 Destruction

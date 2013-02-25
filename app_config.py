@@ -15,7 +15,7 @@ DEPLOYED_NAME = 'family-meal'
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
 PRODUCTION_SERVERS = ['54.245.228.214']
 
-STAGING_S3_BUCKETS = ['stage-apps.npr.org']
+STAGING_S3_BUCKETS = ['apps.npr.org']
 STAGING_SERVERS = ['54.245.225.88']
 
 S3_BUCKETS = []
@@ -55,20 +55,22 @@ def configure_targets(deployment_target):
     global S3_BUCKETS
     global SERVERS
     global DEBUG
-
+    global TUMBLR_URL
+    global TUMBLR_BLOG_ID
 
     if deployment_target == 'production':
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
         SERVERS = PRODUCTION_SERVERS
         DEBUG = False
-        TUMBLR_URL = 'family-meal-production.tumblr.com'
-        TUMBLR_BLOG_ID = 'family-meal-production'
+        TUMBLR_URL = 'production-family-meal.tumblr.com'
+        TUMBLR_BLOG_ID = 'family-meal'
+
     else:
         S3_BUCKETS = STAGING_S3_BUCKETS
         SERVERS = STAGING_SERVERS
         DEBUG = True
-        TUMBLR_URL = 'family-meal-staging.tumblr.com'
-        TUMBLR_BLOG_ID = 'family-meal-staging'
+        TUMBLR_URL = 'staging-family-meal.tumblr.com'
+        TUMBLR_BLOG_ID = 'staging-family-meal'
 
 DEPLOYMENT_TARGET = os.environ.get('DEPLOYMENT_TARGET', None)
 
