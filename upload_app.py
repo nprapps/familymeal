@@ -2,6 +2,7 @@
 
 import os
 import re
+import unicodedata
 
 import boto
 from boto.s3.key import Key
@@ -17,6 +18,17 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 
 @app.route('/family-meal/', methods=['POST'])
 def _post_to_tumblr():
+
+    def slugify(value):
+        """
+        Converts to lowercase, removes non-word characters (alphanumerics and
+        underscores) and converts spaces to hyphens. Also strips leading and
+        trailing whitespace.
+        """
+        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+        value = re.sub('[^\w\s-]', '', value).strip().lower()
+        return re.sub('[-\s]+', '-', value)
+
     """
     Handles the POST to Tumblr.
     """
@@ -56,6 +68,8 @@ def _post_to_tumblr():
         oauth_token=os.environ['TUMBLR_OAUTH_TOKEN'],
         oauth_token_secret=os.environ['TUMBLR_OAUTH_TOKEN_SECRET'])
 
+    filename = slugify(request.files['image'].filename)
+
     for s3_bucket in app_config.S3_BUCKETS:
         conn = boto.connect_s3()
         bucket = conn.get_bucket(s3_bucket)
@@ -66,7 +80,7 @@ def _post_to_tumblr():
         policy = 'public-read'
 
         k = Key(bucket)
-        k.key = '%s/tmp/%s' % (app_config.DEPLOYED_NAME, request.files['image'].filename)
+        k.key = '%s/tmp/%s' % (app_config.DEPLOYED_NAME, filename)
         k.set_contents_from_string(
             request.files['image'].getvalue(),
             headers=headers,
@@ -79,7 +93,7 @@ def _post_to_tumblr():
         'source': 'http://%s.s3.amazonaws.com/%s/tmp/%s' % (
             app_config.S3_BUCKETS[0],
             app_config.DEPLOYED_NAME,
-            request.files['image'].filename
+            filename
         )
     }
 
