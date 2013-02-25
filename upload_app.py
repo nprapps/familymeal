@@ -89,7 +89,7 @@ def _post_to_tumblr():
     params = {
         'type': 'photo',
         'caption': caption,
-        'tags': u"%s" % request.form['voted'].replace('-', ''),
+        'tags': u"food,dinner,plate,confession,crunchtime,npr",
         'source': 'http://%s.s3.amazonaws.com/%s/tmp/%s' % (
             app_config.S3_BUCKETS[0],
             app_config.DEPLOYED_NAME,
