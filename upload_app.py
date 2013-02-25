@@ -9,6 +9,7 @@ from boto.s3.key import Key
 
 from flask import Flask, redirect
 from tumblpy import Tumblpy
+from tumblpy import TumblpyError, TumblpyRateLimitError, TumblpyAuthError
 
 import app_config
 
