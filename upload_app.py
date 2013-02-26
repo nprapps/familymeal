@@ -56,9 +56,7 @@ def _post_to_tumblr():
         value = re.sub(r'\r\n|\r|\n', '\n', value)
         return value.replace('\n', '<br />')
 
-    caption = u"%s %s %s %s %s" % (
-        request.form['voted'],
-        clean(request.form['voted']),
+    caption = u"%s <br> Initialed, <br> %s from %s" % (
         strip_breaks(strip_html(request.form['message'])),
         strip_html(request.form['signed_name']),
         strip_html(request.form['location'])
@@ -99,28 +97,30 @@ def _post_to_tumblr():
         )
     }
 
-    tumblr_dict = {}
-    tumblr_dict['timestamp'] = datetime.datetime.now()
+    tumblr_post = t.post('post', blog_url="staging-family-meal.tumblr.com", params=params)
+    return redirect(u"http://%s/%s#posts" % (app_config.TUMBLR_URL, tumblr_post['id']), code=301)
 
-    try:
-        tumblr_post = t.post('post', blog_url="staging-family-meal.tumblr.com", params=params)
-        tumblr_dict['tumblr_id'] = tumblr_post['id']
-        tumblr_dict['tumblr_url'] = u"http://%s/%s" % (app_config.TUMBLR_URL, tumblr_post['id'])
-        tumblr_dict['result'] = {'code': 200, 'message': 'success'}
+    # tumblr_dict = {}
+    # tumblr_dict['timestamp'] = datetime.datetime.now()
 
-        return redirect(u"http://%s/%s#posts" % (app_config.TUMBLR_URL, tumblr_post['id']), code=301)
+    # try:
+    #     tumblr_post = t.post('post', blog_url="staging-family-meal.tumblr.com", params=params)
+    #     tumblr_dict['tumblr_id'] = tumblr_post['id']
+    #     tumblr_dict['tumblr_url'] = u"http://%s/%s" % (app_config.TUMBLR_URL, tumblr_post['id'])
+    #     tumblr_dict['result'] = {'code': 200, 'message': 'success'}
 
-    except TumblpyAuthError:
-        tumblr_dict['result'] = {'code': 401, 'message': 'Failed: Not authenticated.'}
-        return 'NOT AUTHENTICATED'
+    #     return redirect(u"http://%s/%s#posts" % (app_config.TUMBLR_URL, tumblr_post['id']), code=301)
+    # except TumblpyAuthError:
+    #     tumblr_dict['result'] = {'code': 401, 'message': 'Failed: Not authenticated.'}
+    #     return 'NOT AUTHENTICATED'
 
-    except TumblpyRateLimitError:
-        tumblr_dict['result'] = {'code': 403, 'message': 'Failed: Rate limited.'}
-        return 'RATE LIMITED'
+    # except TumblpyRateLimitError:
+    #     tumblr_dict['result'] = {'code': 403, 'message': 'Failed: Rate limited.'}
+    #     return 'RATE LIMITED'
 
-    except:
-        tumblr_dict['result'] = {'code': 400, 'message': 'Failed: Unknown.'}
-        return 'UNKNOWN FAILURE'
+    # except:
+    #     tumblr_dict['result'] = {'code': 400, 'message': 'Failed: Unknown.'}
+    #     return 'UNKNOWN FAILURE'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8001, debug=app_config.DEBUG)
