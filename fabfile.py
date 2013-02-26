@@ -108,10 +108,11 @@ def render():
 
     less()
     jst()
-    app_config_js()
 
     # Fake out deployment target
-    app_config.configure_targets(env.get(settings, None))
+    app_config.configure_targets(env.get('settings', None))
+
+    app_config_js()
 
     compiled_includes = []
 
@@ -232,9 +233,24 @@ def create_log_file():
     sudo('touch /var/log/familymeal.log')
     sudo('chown ubuntu /var/log/familymeal.log')
 
+def install_scout_plugins():
+    """
+    Install plugins to Scout.
+    """
+    run('cp %(repo_path)s/scout/*.rb ~/.scout' % env)
+
 """
 Deployment
 """
+def restart_uwsgi():
+    require('settings', provided_by=[production, staging])
+    sudo('service familymeal stop')
+    sudo('service familymeal start')
+
+def reload_app():
+    require('settings', provided_by=[production, staging])
+    run('touch %(repo_path)s/upload_app.py' % env)
+
 def _deploy_to_s3():
     """
     Deploy the gzipped stuff to

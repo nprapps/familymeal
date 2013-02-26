@@ -3,7 +3,6 @@
 import datetime
 import os
 import re
-import unicodedata
 import logging
 
 import boto
@@ -11,7 +10,8 @@ from boto.s3.key import Key
 
 from flask import Flask, redirect
 from tumblpy import Tumblpy
-from tumblpy import TumblpyError, TumblpyRateLimitError, TumblpyAuthError
+from tumblpy import TumblpyRateLimitError, TumblpyAuthError
+from werkzeug import secure_filename
 
 import app_config
 
@@ -27,16 +27,6 @@ logger.setLevel(logging.INFO)
 
 @app.route('/family-meal/', methods=['POST'])
 def _post_to_tumblr():
-
-    def slugify(value):
-        """
-        Converts to lowercase, removes non-word characters (alphanumerics and
-        underscores) and converts spaces to hyphens. Also strips leading and
-        trailing whitespace.
-        """
-        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
-        value = re.sub('[^\w\s-]', '', value).strip().lower()
-        return re.sub('[-\s]+', '-', value)
 
     """
     Handles the POST to Tumblr.
@@ -63,10 +53,16 @@ def _post_to_tumblr():
         value = re.sub(r'\r\n|\r|\n', '\n', value)
         return value.replace('\n', '<br />')
 
-    caption = u"%s<br/>Initialed,<br/>%s from %s" % (
+    caption = u"""
+        <p class='message'>%s</p>
+        <p class='signature-name'>Initialed,<br/>%s from %s</p>
+        <p class='footnote'>Dinner is hard. We want to know what's on your family's table, and why.
+        Share yours at <a href='http://%s/'>NPR's Dinnertime Confessional</a>.</p>
+    """ % (
         strip_breaks(strip_html(request.form['message'])),
         strip_html(request.form['signed_name']),
-        strip_html(request.form['location'])
+        strip_html(request.form['location']),
+        app_config.TUMBLR_URL
     )
 
     t = Tumblpy(
@@ -75,7 +71,7 @@ def _post_to_tumblr():
         oauth_token=os.environ['TUMBLR_OAUTH_TOKEN'],
         oauth_token_secret=os.environ['TUMBLR_OAUTH_TOKEN_SECRET'])
 
-    filename = slugify(request.files['image'].filename)
+    filename = secure_filename(request.files['image'].filename.replace(' ', '-'))
 
     for s3_bucket in app_config.S3_BUCKETS:
         conn = boto.connect_s3()
@@ -93,28 +89,30 @@ def _post_to_tumblr():
             headers=headers,
             policy=policy)
 
-    params = {
-        'type': 'photo',
-        'caption': caption,
-        'tags': u"food,dinner,plate,confession,crunchtime,npr",
-        'source': 'http://%s.s3.amazonaws.com/%s/tmp/%s' % (
+    s3_path = 'http://%s.s3.amazonaws.com/%s/tmp/%s' % (
             app_config.S3_BUCKETS[0],
             app_config.DEPLOYED_NAME,
             filename
         )
+
+    params = {
+        'type': 'photo',
+        'caption': caption,
+        'tags': u"food,dinner,plate,confession,crunchtime,npr",
+        'source': s3_path
     }
 
     tumblr_dict = {}
     tumblr_dict['timestamp'] = datetime.datetime.now()
 
     try:
-        tumblr_post = t.post('post', blog_url="staging-family-meal.tumblr.com", params=params)
+        tumblr_post = t.post('post', blog_url=app_config.TUMBLR_URL, params=params)
         tumblr_dict['tumblr_id'] = tumblr_post['id']
         tumblr_dict['tumblr_url'] = u"http://%s/%s" % (app_config.TUMBLR_URL, tumblr_post['id'])
         tumblr_dict['result'] = {'code': 200, 'message': 'success'}
         logger.info('200 %s' % tumblr_dict['tumblr_url'])
 
-        return redirect(u"http://%s/%s#posts" % (app_config.TUMBLR_URL, tumblr_post['id']), code=301)
+        return redirect(u"http://%s/%s#posts?%s" % (app_config.TUMBLR_URL, tumblr_post['id'], app_config.DEPLOYMENT_TARGET), code=301)
 
     except TumblpyAuthError:
         tumblr_dict['result'] = {'code': 401, 'message': 'Failed: Not authenticated.'}
