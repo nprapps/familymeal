@@ -110,17 +110,17 @@ def _post_to_tumblr():
 
         return redirect(u"http://%s/%s#posts" % (app_config.TUMBLR_URL, tumblr_post['id']), code=301)
 
-    except TumblpyRateLimitError:
-        tumblr_dict['result'] = {'code': 403, 'message': 'failed'}
+    except TumblpyAuthError:
+        tumblr_dict['result'] = {'code': 401, 'message': 'Failed: Not authenticated.'}
+        return 'NOT AUTHENTICATED'
 
-        return 'OWCH THAT HURTS!'
+    except TumblpyRateLimitError:
+        tumblr_dict['result'] = {'code': 403, 'message': 'Failed: Rate limited.'}
+        return 'RATE LIMITED'
 
     except:
-        tumblr_dict['result'] = {'code': 400, 'message': 'failed'}
-
-        return 'GENERIC FAILURE!'
-
-
+        tumblr_dict['result'] = {'code': 400, 'message': 'Failed: Unknown.'}
+        return 'UNKNOWN FAILURE'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8001, debug=app_config.DEBUG)
