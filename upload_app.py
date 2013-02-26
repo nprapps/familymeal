@@ -18,6 +18,13 @@ import app_config
 app = Flask(app_config.PROJECT_NAME)
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
+logger = logging.getLogger('tumblr')
+file_handler = logging.FileHandler('/var/log/familymeal.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+logger.setLevel(logging.INFO)
+
 @app.route('/family-meal/', methods=['POST'])
 def _post_to_tumblr():
 
@@ -72,7 +79,7 @@ def _post_to_tumblr():
         k = Key(bucket)
         k.key = '%s/tmp/%s' % (app_config.DEPLOYED_NAME, filename)
         k.set_contents_from_file(
-            request.files['image'],stream,
+            request.files['image'].stream,
             headers=headers,
             policy=policy)
 
@@ -97,13 +104,6 @@ def _post_to_tumblr():
 
     tumblr_dict = {}
     tumblr_dict['timestamp'] = datetime.datetime.now()
-
-    logger = logging.getLogger('tumblr')
-    file_handler = logging.FileHandler('/var/log/familymeal.log')
-    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-    logger.setLevel(logging.INFO)
 
     try:
         tumblr_post = t.post('post', blog_url=app_config.TUMBLR_URL, params=params)
