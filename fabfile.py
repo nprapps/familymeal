@@ -235,6 +235,15 @@ def create_log_file():
 """
 Deployment
 """
+def restart_uwsgi():
+    require('settings', provided_by=[production, staging])
+    sudo('service familymeal stop')
+    sudo('service familymeal start')
+
+def reload_app():
+    require('settings', provided_by=[production, staging])
+    run('touch %(repo_path)s/upload_app.py' % env)
+
 def _deploy_to_s3():
     """
     Deploy the gzipped stuff to
