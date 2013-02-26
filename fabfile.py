@@ -237,7 +237,7 @@ def install_scout_plugins():
     """
     Install plugins to Scout.
     """
-    run('cp %(repo_path)s/scout/*.rb ~/.scout' % env)
+    run('ln -s %(repo_path)s/scout/*.rb ~/.scout' % env)
 
 """
 Deployment

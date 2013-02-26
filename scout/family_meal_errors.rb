@@ -14,7 +14,7 @@ class FamilyMealErrors < Scout::Plugin
         # finds new content from +last_bytes+ to the end of the file, then just extracts from the recorded
         # +read_length+. This ignores new lines that are added after finding the +current_length+. Those lines
         # will be read on the next run.
-        count = `tail -c +#{last_bytes+1} #{log_file_path} | head -c #{read_length} | grep "ERROR"`
+        count = `tail -c +#{last_bytes+1} #{log_file_path} | head -c #{read_length} | grep "ERROR" -c`.strip().to_i
       else
         count = nil
       end
