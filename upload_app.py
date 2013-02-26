@@ -106,7 +106,7 @@ def _post_to_tumblr():
     tumblr_dict['timestamp'] = datetime.datetime.now()
 
     try:
-        tumblr_post = t.post('post', blog_url="staging-family-meal.tumblr.com", params=params)
+        tumblr_post = t.post('post', blog_url=app_config.TUMBLR_URL, params=params)
         tumblr_dict['tumblr_id'] = tumblr_post['id']
         tumblr_dict['tumblr_url'] = u"http://%s/%s" % (app_config.TUMBLR_URL, tumblr_post['id'])
         tumblr_dict['result'] = {'code': 200, 'message': 'success'}

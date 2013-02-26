@@ -63,7 +63,7 @@ def configure_targets(deployment_target):
         SERVERS = PRODUCTION_SERVERS
         DEBUG = False
         TUMBLR_URL = 'dinnertimeconfessional.tumblr.com'
-        TUMBLR_BLOG_ID = 'family-meal'
+        TUMBLR_BLOG_ID = 'dinnertimeconfessional'
 
     else:
         S3_BUCKETS = STAGING_S3_BUCKETS
