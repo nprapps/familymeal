@@ -87,10 +87,6 @@
             	font-size: 11px;
             	font-style: italic;
             }
-            #blog_info .more { 
-            	font-size: 12px; 
-            	font-weight: bold;
-            }
 
             #dmp-form {
                 color: #fff;
@@ -974,7 +970,14 @@
             <header id="header">
                 <section id="blog_info">
                     {block:IfShowBlogTitle}<h1><a href="/">{Title}</a></h1>{/block:IfShowBlogTitle}
-                    {block:IfShowBlogDescription}{block:Description}<div class="cont description group">{Description}<br /><span class="more">Full Series: <a href="http://www.npr.org/series/172693794/on-the-run-how-families-struggle-to-eat-well-and-exercise">On The Run: How Families Struggle To Eat Well And Exercise &rsaquo;</a></span></div>{/block:Description}{/block:IfShowBlogDescription}
+                    {block:IfShowBlogDescription}
+                    	{block:Description}
+                    		<div class="cont description group">
+                    			{Description}<br />
+                    			<span class="more">Full Series: <a href="http://www.npr.org/series/172693794/on-the-run-how-families-struggle-to-eat-well-and-exercise">On The Run: How Families Struggle To Eat Well And Exercise &rsaquo;</a></span>
+                    		</div>
+                    	{/block:Description}
+                    {/block:IfShowBlogDescription}
                     {block:IndexPage}
                     <p class="project-credits">Credits: Eliza Barclay, Jeremy Bowers, Ben de la Cruz, Deborah Franklin, Maria Godoy, Alyson Hurt, Kate Myers, Katie Zhu / NPR<br />
                     	Questions? Problems? E-mail <a href="mailto:tumblr@npr.org">tumblr@npr.org</a>.
