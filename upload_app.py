@@ -71,8 +71,8 @@ def _post_to_tumblr():
 
         k = Key(bucket)
         k.key = '%s/tmp/%s' % (app_config.DEPLOYED_NAME, filename)
-        k.set_contents_from_string(
-            request.files['image'].stream.getvalue(),
+        k.send_file(
+            request.files['image'],
             headers=headers,
             policy=policy)
 
