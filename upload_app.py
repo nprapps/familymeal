@@ -56,9 +56,7 @@ def _post_to_tumblr():
         value = re.sub(r'\r\n|\r|\n', '\n', value)
         return value.replace('\n', '<br />')
 
-    caption = u"%s %s %s %s %s" % (
-        request.form['voted'],
-        clean(request.form['voted']),
+    caption = u"%s <br> Initialed, <br> %s from %s" % (
         strip_breaks(strip_html(request.form['message'])),
         strip_html(request.form['signed_name']),
         strip_html(request.form['location'])
