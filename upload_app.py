@@ -4,6 +4,7 @@ import datetime
 import os
 import re
 import unicodedata
+import logging
 
 import boto
 from boto.s3.key import Key
@@ -17,6 +18,12 @@ import app_config
 app = Flask(app_config.PROJECT_NAME)
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
+logger = logging.getLogger('tumblr')
+file_handler = logging.FileHandler('/var/log/familymeal.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+logger.setLevel(logging.INFO)
 
 @app.route('/family-meal/', methods=['POST'])
 def _post_to_tumblr():
@@ -103,30 +110,32 @@ def _post_to_tumblr():
         )
     }
 
-    tumblr_post = t.post('post', blog_url=app_config.TUMBLR_URL, params=params)
-    return redirect(u"http://%s/%s#posts" % (app_config.TUMBLR_URL, tumblr_post['id']), code=301)
+    tumblr_dict = {}
+    tumblr_dict['timestamp'] = datetime.datetime.now()
 
-    # tumblr_dict = {}
-    # tumblr_dict['timestamp'] = datetime.datetime.now()
+    try:
+        tumblr_post = t.post('post', blog_url="staging-family-meal.tumblr.com", params=params)
+        tumblr_dict['tumblr_id'] = tumblr_post['id']
+        tumblr_dict['tumblr_url'] = u"http://%s/%s" % (app_config.TUMBLR_URL, tumblr_post['id'])
+        tumblr_dict['result'] = {'code': 200, 'message': 'success'}
+        logger.info('200 %s' % tumblr_dict['tumblr_url'])
 
-    # try:
-    #     tumblr_post = t.post('post', blog_url="staging-family-meal.tumblr.com", params=params)
-    #     tumblr_dict['tumblr_id'] = tumblr_post['id']
-    #     tumblr_dict['tumblr_url'] = u"http://%s/%s" % (app_config.TUMBLR_URL, tumblr_post['id'])
-    #     tumblr_dict['result'] = {'code': 200, 'message': 'success'}
+        return redirect(u"http://%s/%s#posts" % (app_config.TUMBLR_URL, tumblr_post['id']), code=301)
 
-    #     return redirect(u"http://%s/%s#posts" % (app_config.TUMBLR_URL, tumblr_post['id']), code=301)
-    # except TumblpyAuthError:
-    #     tumblr_dict['result'] = {'code': 401, 'message': 'Failed: Not authenticated.'}
-    #     return 'NOT AUTHENTICATED'
+    except TumblpyAuthError:
+        tumblr_dict['result'] = {'code': 401, 'message': 'Failed: Not authenticated.'}
+        logger.error('401 Not Authenticated')
+        return 'NOT AUTHENTICATED'
 
-    # except TumblpyRateLimitError:
-    #     tumblr_dict['result'] = {'code': 403, 'message': 'Failed: Rate limited.'}
-    #     return 'RATE LIMITED'
+    except TumblpyRateLimitError:
+        tumblr_dict['result'] = {'code': 403, 'message': 'Failed: Rate limited.'}
+        logger.error('403 Rate Limited')
+        return 'RATE LIMITED'
 
-    # except:
-    #     tumblr_dict['result'] = {'code': 400, 'message': 'Failed: Unknown.'}
-    #     return 'UNKNOWN FAILURE'
+    except:
+        tumblr_dict['result'] = {'code': 400, 'message': 'Failed: Unknown.'}
+        logger.error('400 Unknown')
+        return 'UNKNOWN FAILURE'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8001, debug=app_config.DEBUG)
