@@ -18,13 +18,6 @@ import app_config
 app = Flask(app_config.PROJECT_NAME)
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
-logger = logging.getLogger('tumblr')
-file_handler = logging.FileHandler('/var/log/familymeal.log')
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
-logger.setLevel(logging.INFO)
-
 @app.route('/family-meal/', methods=['POST'])
 def _post_to_tumblr():
 
@@ -65,12 +58,6 @@ def _post_to_tumblr():
         app_config.TUMBLR_URL
     )
 
-    t = Tumblpy(
-        app_key=app_config.TUMBLR_KEY,
-        app_secret=os.environ['TUMBLR_APP_SECRET'],
-        oauth_token=os.environ['TUMBLR_OAUTH_TOKEN'],
-        oauth_token_secret=os.environ['TUMBLR_OAUTH_TOKEN_SECRET'])
-
     filename = secure_filename(request.files['image'].filename.replace(' ', '-'))
 
     for s3_bucket in app_config.S3_BUCKETS:
@@ -85,9 +72,15 @@ def _post_to_tumblr():
         k = Key(bucket)
         k.key = '%s/tmp/%s' % (app_config.DEPLOYED_NAME, filename)
         k.set_contents_from_string(
-            request.files['image'].getvalue(),
+            request.files['image'].stream.getvalue(),
             headers=headers,
             policy=policy)
+
+    t = Tumblpy(
+        app_key=app_config.TUMBLR_KEY,
+        app_secret=os.environ['TUMBLR_APP_SECRET'],
+        oauth_token=os.environ['TUMBLR_OAUTH_TOKEN'],
+        oauth_token_secret=os.environ['TUMBLR_OAUTH_TOKEN_SECRET'])
 
     s3_path = 'http://%s.s3.amazonaws.com/%s/tmp/%s' % (
             app_config.S3_BUCKETS[0],
@@ -104,6 +97,13 @@ def _post_to_tumblr():
 
     tumblr_dict = {}
     tumblr_dict['timestamp'] = datetime.datetime.now()
+
+    logger = logging.getLogger('tumblr')
+    file_handler = logging.FileHandler('/var/log/familymeal.log')
+    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    logger.setLevel(logging.INFO)
 
     try:
         tumblr_post = t.post('post', blog_url=app_config.TUMBLR_URL, params=params)
