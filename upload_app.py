@@ -3,7 +3,6 @@
 import datetime
 import os
 import re
-import unicodedata
 import logging
 
 import boto
@@ -113,7 +112,7 @@ def _post_to_tumblr():
         tumblr_dict['result'] = {'code': 200, 'message': 'success'}
         logger.info('200 %s' % tumblr_dict['tumblr_url'])
 
-        return redirect(u"http://%s/%s#posts?%s" % (app_config.TUMBLR_URL, tumblr_post['id'], s3_path), code=301)
+        return redirect(u"http://%s/%s#posts?%s" % (app_config.TUMBLR_URL, tumblr_post['id'], app_config.DEPLOYMENT_TARGET), code=301)
 
     except TumblpyAuthError:
         tumblr_dict['result'] = {'code': 401, 'message': 'Failed: Not authenticated.'}
