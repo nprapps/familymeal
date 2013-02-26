@@ -56,10 +56,16 @@ def _post_to_tumblr():
         value = re.sub(r'\r\n|\r|\n', '\n', value)
         return value.replace('\n', '<br />')
 
-    caption = u"%s<br/>Initialed,<br/>%s from %s" % (
+    caption = u"""
+        <p class='message'>%s</p>
+        <p class='signature-name'>Initialed,<br/>%s from %s</p>
+        <p class='footnote'>Dinner is hard. We want to know what's on your family's table, and why.
+        Share yours at <a href='http://%s/'>NPR's Dinnertime Confessional</a>.</p>
+    """ % (
         strip_breaks(strip_html(request.form['message'])),
         strip_html(request.form['signed_name']),
-        strip_html(request.form['location'])
+        strip_html(request.form['location']),
+        app_config.TUMBLR_URL
     )
 
     t = Tumblpy(
