@@ -1,20 +1,20 @@
 <div class="tumblr-form">
     <form id="tumblr-form" method="post" enctype="multipart/form-data" action="http://{{ SERVERS[0] }}/family-meal/">
+		<img src="img/family-meal.png" alt="Sample Photo" class="sample-photo" />
         <ol>
                 <li class="form-intro">
                 <label class="header">Time to &rsquo;fess up.</label>
                 <p>Eating at the same table is tough for many families, and even if we&rsquo;re gathered together, we&rsquo;re not eating the same foods.</p>
                 </li>
             <li class="form-photo">
-                <img src="img/sample-photo-2.jpg" alt="Sample Photo" class="sample-photo" />
                 <label for="image" class="instructions">
-                        <strong>SHOW:</strong> Take a photo of your family&rsquo;s dinner plates.
+                        <strong>SHOW:</strong><br />Take a photo of your family&rsquo;s dinner plates.
                 </label>
                 <input type="file" name="image" width="90" accept="image/*" required>
             </li>
             <li class="form-message">
                 <label for="message" class="instructions">
-                        <strong>SHARE:</strong> Tell us a bit about who&rsquo;s eating what and why. Got a tip for getting dinner on the table quickly? Share that, too if you like. We&rsquo;re all in this together.
+                        <strong>SHARE:</strong><br />Tell us a bit about who&rsquo;s eating what and why. Got a tip for getting dinner on the table quickly? Share that, too if you like. We&rsquo;re all in this together.
                 </label>
                 <textarea name="message" required></textarea>
             </li>
