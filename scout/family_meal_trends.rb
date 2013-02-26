@@ -1,7 +1,8 @@
 class FamilyMealTrends < Scout::Plugin
   def build_report
+    log_file_path = '/var/log/familymeal.log'
     last_bytes = memory(:last_bytes) || 0
-    current_length = `wc -c #{@log_file_path}`.split(' ')[0].to_i
+    current_length = `wc -c #{log_file_path}`.split(' ')[0].to_i
     count = 0
 
     # don't run it the first time
@@ -13,7 +14,7 @@ class FamilyMealTrends < Scout::Plugin
         # finds new content from +last_bytes+ to the end of the file, then just extracts from the recorded
         # +read_length+. This ignores new lines that are added after finding the +current_length+. Those lines
         # will be read on the next run.
-        count = `tail -c +#{last_bytes+1} #{@log_file_path} | wc -l`
+        count = `tail -c +#{last_bytes+1} #{log_file_path} | wc -l`
       else
         count = nil
       end
