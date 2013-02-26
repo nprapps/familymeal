@@ -56,7 +56,7 @@ def _post_to_tumblr():
         value = re.sub(r'\r\n|\r|\n', '\n', value)
         return value.replace('\n', '<br />')
 
-    caption = u"%s <br> Initialed, <br> %s from %s" % (
+    caption = u"%s<br/>Initialed,<br/>%s from %s" % (
         strip_breaks(strip_html(request.form['message'])),
         strip_html(request.form['signed_name']),
         strip_html(request.form['location'])
@@ -97,7 +97,7 @@ def _post_to_tumblr():
         )
     }
 
-    tumblr_post = t.post('post', blog_url="staging-family-meal.tumblr.com", params=params)
+    tumblr_post = t.post('post', blog_url=app_config.TUMBLR_URL, params=params)
     return redirect(u"http://%s/%s#posts" % (app_config.TUMBLR_URL, tumblr_post['id']), code=301)
 
     # tumblr_dict = {}
