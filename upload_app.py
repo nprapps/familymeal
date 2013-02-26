@@ -67,18 +67,17 @@ def _post_to_tumblr():
 
     filename = secure_filename(request.files['image'].filename.replace(' ', '-'))
 
-    for s3_bucket in app_config.S3_BUCKETS:
-        conn = boto.connect_s3()
-        bucket = conn.get_bucket(s3_bucket)
-        headers = {
-            'Content-Type': request.files['image'].content_type,
-            'Cache-Control': 'public, max-age=31536000'
-        }
-        policy = 'public-read'
+    conn = boto.connect_s3()
+    bucket = conn.get_bucket(app_config.S3_BUCKETS[0])
+    headers = {
+        'Content-Type': request.files['image'].content_type,
+        'Cache-Control': 'public, max-age=31536000'
+    }
+    policy = 'public-read'
 
-        k = Key(bucket)
-        k.key = '%s/tmp/%s' % (app_config.DEPLOYED_NAME, filename)
-        k.set_contents_from_file(request.files['image'].stream, headers=headers, policy=policy, rewind=True)
+    k = Key(bucket)
+    k.key = '%s/tmp/%s' % (app_config.DEPLOYED_NAME, filename)
+    k.set_contents_from_file(request.files['image'].stream, headers=headers, policy=policy, rewind=True)
 
     t = Tumblpy(
         app_key=app_config.TUMBLR_KEY,
