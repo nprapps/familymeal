@@ -225,6 +225,13 @@ def bootstrap_issues():
     github.create_default_labels(auth)
     github.create_default_tickets(auth)
 
+def create_log_file():
+    """
+    Creates the log file for recording Tumblr POSTs.
+    """
+    sudo('touch /var/log/familymeal.log')
+    sudo('chown ubuntu /var/log/familymeal.log')
+
 """
 Deployment
 """
