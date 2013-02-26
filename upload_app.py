@@ -11,7 +11,8 @@ from boto.s3.key import Key
 
 from flask import Flask, redirect
 from tumblpy import Tumblpy
-from tumblpy import TumblpyError, TumblpyRateLimitError, TumblpyAuthError
+from tumblpy import TumblpyRateLimitError, TumblpyAuthError
+from werkzeug import secure_filename
 
 import app_config
 
@@ -27,16 +28,6 @@ logger.setLevel(logging.INFO)
 
 @app.route('/family-meal/', methods=['POST'])
 def _post_to_tumblr():
-
-    def slugify(value):
-        """
-        Converts to lowercase, removes non-word characters (alphanumerics and
-        underscores) and converts spaces to hyphens. Also strips leading and
-        trailing whitespace.
-        """
-        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
-        value = re.sub('[^\w\s-]', '', value).strip().lower()
-        return re.sub('[-\s]+', '-', value)
 
     """
     Handles the POST to Tumblr.
@@ -81,7 +72,7 @@ def _post_to_tumblr():
         oauth_token=os.environ['TUMBLR_OAUTH_TOKEN'],
         oauth_token_secret=os.environ['TUMBLR_OAUTH_TOKEN_SECRET'])
 
-    filename = slugify(request.files['image'].filename)
+    filename = secure_filename(request.files['image'].filename.replace(' ', '-'))
 
     for s3_bucket in app_config.S3_BUCKETS:
         conn = boto.connect_s3()
