@@ -233,6 +233,12 @@ def create_log_file():
     sudo('touch /var/log/familymeal.log')
     sudo('chown ubuntu /var/log/familymeal.log')
 
+def install_scout_plugins():
+    """
+    Install plugins to Scout.
+    """
+    run('cp %(repo_path)s/scout/*.rb ~/.scout' % env)
+
 """
 Deployment
 """
