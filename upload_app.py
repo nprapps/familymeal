@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import datetime
 import os
 import re
 import logging
@@ -104,7 +103,7 @@ def _post_to_tumblr():
             tumblr_url = u"http://%s/%s" % (app_config.TUMBLR_URL, tumblr_post['id'])
             logger.info('200 %s' % tumblr_url)
 
-            return redirect(u"http://%s/%s#posts" % (app_config.TUMBLR_URL, tumblr_post['id']), code=301)
+            return redirect('%s#posts' % tumblr_url, code=301)
 
         except TumblpyError, e:
             logger.error('%s %s' % (e.error_code, e.msg))
