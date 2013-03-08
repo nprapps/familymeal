@@ -77,14 +77,18 @@ def _post_to_tumblr():
         secure_filename(request.files['image'].filename.replace(' ', '-'))
     )
 
+    print '/tmp%s' % file_path
+
     with open('/tmp%s' % file_path, 'w') as f:
         f.write(request.files['image'].read())
+
+    print 'http://%s/%s' % (app_config.SERVERS[0], file_path)
 
     params = {
         'type': 'photo',
         'caption': caption,
         'tags': "food,dinner,plate,confession,crunchtime,npr",
-        'source': 'http://%s/%s' % (app_config.STAGING_SERVERS[0], file_path)
+        'source': 'http://%s/%s' % (app_config.SERVERS[0], file_path)
     }
 
     # try:
