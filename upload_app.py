@@ -65,25 +65,20 @@ def _post_to_tumblr():
         oauth_token=os.environ['TUMBLR_OAUTH_TOKEN'],
         oauth_token_secret=os.environ['TUMBLR_OAUTH_TOKEN_SECRET'])
 
-    # file_path = '/upload/%s/%s_%s' % (
-    #     'family-meal',
-    #     time.mktime(datetime.datetime.now().timetuple()),
-    #     secure_filename(request.files['image'].filename.replace(' ', '-'))
-    # )
+    file_path = '/upload/%s/%s_%s' % (
+        'family-meal',
+        str(time.mktime(datetime.datetime.now().timetuple())).replace('.', ''),
+        secure_filename(request.files['image'].filename.replace(' ', '-'))
+    )
 
-    # with open('/tmp%s' % file_path, 'w') as f:
-    #     f.write(request.files['image'].read())
-
-    # params = {
-    #     "type": "photo",
-    #     "caption": caption,
-    #     "tags": "food,dinner,plate,confession,crunchtime,npr",
-    #     "source": "http://%s%s" % (app_config.SERVERS[0], file_path)
-    # }
+    with open('/tmp%s' % file_path, 'w') as f:
+        f.write(request.files['image'].read())
 
     params = {
         "type": "photo",
-        "source": "http://54.245.198.194/upload/family-meal/1362776701.0_IMG_8482.jpg"
+        "caption": caption,
+        "tags": "food,dinner,plate,confession,crunchtime,npr",
+        "source": "http://%s%s" % (app_config.SERVERS[0], file_path)
     }
 
     tumblr_post = t.post('post', blog_url=app_config.TUMBLR_URL, params=params)
