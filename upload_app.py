@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
+import datetime
+import logging
 import os
 import re
-import logging
+import time
+import urllib
 
 import boto
 from boto.s3.key import Key
-
 from flask import Flask, redirect
 from tumblpy import Tumblpy
 from tumblpy import TumblpyError
@@ -23,6 +25,7 @@ formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.setLevel(logging.INFO)
+
 
 @app.route('/family-meal/', methods=['POST'])
 def _post_to_tumblr():
@@ -52,66 +55,75 @@ def _post_to_tumblr():
         value = re.sub(r'\r\n|\r|\n', '\n', value)
         return value.replace('\n', '<br />')
 
-    try:
-        caption = u"""
-            <p class='message'>%s</p>
-            <p class='signature-name'>Initialed,<br/>%s from %s</p>
-            <p class='footnote'>Dinner is hard. We want to know what's on your family's table, and why.
-            Share yours at <a href='http://%s/'>NPR's Dinnertime Confessional</a>.</p>
-        """ % (
-            strip_breaks(strip_html(request.form['message'])),
-            strip_html(request.form['signed_name']),
-            strip_html(request.form['location']),
-            app_config.TUMBLR_URL
-        )
+# try:
+    caption = u"""
+        <p class='message'>%s</p>
+        <p class='signature-name'>Initialed,<br/>%s from %s</p>
+        <p class='footnote'>Dinner is hard. We want to know what's on your family's table, and why.
+        Share yours at <a href='http://%s/'>NPR's Dinnertime Confessional</a>.</p>
+    """ % (
+        strip_breaks(strip_html(request.form['message'])),
+        strip_html(request.form['signed_name']),
+        strip_html(request.form['location']),
+        app_config.TUMBLR_URL
+    )
 
-        filename = secure_filename(request.files['image'].filename.replace(' ', '-'))
+    # filename = secure_filename(request.files['image'].filename.replace(' ', '-'))
 
-        conn = boto.connect_s3()
-        bucket = conn.get_bucket(app_config.S3_BUCKETS[0])
-        headers = {
-            'Content-Type': request.files['image'].content_type,
-            'Cache-Control': 'public, max-age=31536000'
-        }
-        policy = 'public-read'
+    # conn = boto.connect_s3()
+    # bucket = conn.get_bucket(app_config.S3_BUCKETS[0])
+    # headers = {
+    #     'Content-Type': request.files['image'].content_type,
+    #     'Cache-Control': 'public, max-age=31536000'
+    # }
+    # policy = 'public-read'
 
-        k = Key(bucket)
-        k.key = '%s/tmp/%s' % (app_config.DEPLOYED_NAME, filename)
-        k.set_contents_from_file(request.files['image'].stream, headers=headers, policy=policy, rewind=True)
+    # k = Key(bucket)
+    # k.key = '%s/tmp/%s' % (app_config.DEPLOYED_NAME, filename)
+    # k.set_contents_from_file(request.files['image'].stream, headers=headers, policy=policy, rewind=True)
 
-        t = Tumblpy(
-            app_key=app_config.TUMBLR_KEY,
-            app_secret=os.environ['TUMBLR_APP_SECRET'],
-            oauth_token=os.environ['TUMBLR_OAUTH_TOKEN'],
-            oauth_token_secret=os.environ['TUMBLR_OAUTH_TOKEN_SECRET'])
+    t = Tumblpy(
+        app_key=app_config.TUMBLR_KEY,
+        app_secret=os.environ['TUMBLR_APP_SECRET'],
+        oauth_token=os.environ['TUMBLR_OAUTH_TOKEN'],
+        oauth_token_secret=os.environ['TUMBLR_OAUTH_TOKEN_SECRET'])
 
-        s3_path = 'http://%s.s3.amazonaws.com/%s/tmp/%s' % (
-                app_config.S3_BUCKETS[0],
-                app_config.DEPLOYED_NAME,
-                filename
-            )
+    # s3_path = 'http://%s.s3.amazonaws.com/%s/tmp/%s' % (
+    #         app_config.S3_BUCKETS[0],
+    #         app_config.DEPLOYED_NAME,
+    #         filename
+    #     )
 
+    file_path = 'tmp/%s_%s' % (
+        time.mktime(datetime.datetime.now().timetuple()),
+        secure_filename(request.files['image'].filename.replace(' ', '-'))
+    )
+
+    with open(file_path, 'w') as f:
+        f.write(request.files['image'].read())
+
+    with open(file_path, 'rb') as f:
         params = {
             'type': 'photo',
             'caption': caption,
             'tags': u"food,dinner,plate,confession,crunchtime,npr",
-            'source': s3_path
+            'data': f.read()
         }
 
-        try:
-            tumblr_post = t.post('post', blog_url=app_config.TUMBLR_URL, params=params)
-            tumblr_url = u"http://%s/%s" % (app_config.TUMBLR_URL, tumblr_post['id'])
-            logger.info('200 %s' % tumblr_url)
+        # try:
+        tumblr_post = t.post('post', blog_url=app_config.TUMBLR_URL, params=params)
+        tumblr_url = u"http://%s/%s" % (app_config.TUMBLR_URL, tumblr_post['id'])
+        # logger.info('200 %s' % tumblr_url)
 
-            return redirect('%s#posts' % tumblr_url, code=301)
+        return redirect('%s#posts' % tumblr_url, code=301)
 
-        except TumblpyError, e:
-            logger.error('%s %s' % (e.error_code, e.msg))
-            return 'TUMBLR ERROR'
+        # except TumblpyError, e:
+        #     logger.error('%s %s' % (e.error_code, e.msg))
+        #     return 'TUMBLR ERROR'
 
-    except Exception, e:
-        logger.error('%s' % e)
-        return 'ERROR'
+    # except Exception, e:
+    #     logger.error('%s' % e)
+    #     return 'ERROR'
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8001, debug=app_config.DEBUG)
+    app.run(host='0.0.0.0', port=8002, debug=app_config.DEBUG)
