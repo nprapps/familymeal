@@ -53,7 +53,7 @@ def _post_to_tumblr():
         return value.replace('\n', '<br />')
 
 # try:
-    caption = u"""
+    caption = """
         <p class='message'>%s</p>
         <p class='signature-name'>Initialed,<br/>%s from %s</p>
         <p class='footnote'>Dinner is hard. We want to know what's on your family's table, and why.
@@ -83,8 +83,8 @@ def _post_to_tumblr():
     params = {
         'type': 'photo',
         'caption': caption,
-        'tags': u"food,dinner,plate,confession,crunchtime,npr",
-        'source': 'http://%s' % file_path
+        'tags': "food,dinner,plate,confession,crunchtime,npr",
+        'source': 'http://%s/%s' % (app_config.STAGING_SERVERS[0], file_path)
     }
 
     # try:
