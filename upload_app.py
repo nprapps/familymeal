@@ -72,6 +72,7 @@ def _post_to_tumblr():
         oauth_token_secret=os.environ['TUMBLR_OAUTH_TOKEN_SECRET'])
 
     file_path = '/upload/%s/%s_%s' % (
+        'family-meal',
         time.mktime(datetime.datetime.now().timetuple()),
         secure_filename(request.files['image'].filename.replace(' ', '-'))
     )
