@@ -77,8 +77,8 @@ def _post_to_tumblr():
         secure_filename(request.files['image'].filename.replace(' ', '-'))
     )
 
-    with open(file_path, 'w') as f:
-        f.write('/tmp%s' % request.files['image'].read())
+    with open('/tmp%s' % file_path, 'w') as f:
+        f.write(request.files['image'].read())
 
     params = {
         'type': 'photo',
