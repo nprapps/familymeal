@@ -52,8 +52,7 @@ def _post_to_tumblr():
         value = re.sub(r'\r\n|\r|\n', '\n', value)
         return value.replace('\n', '<br />')
 
-# try:
-    caption = u"<p class='message'>%s</p><p class='signature-name'>Initialed,<br/>%s from %s</p><p class='footnote'>Dinner is hard. We want to know what's on your family's table, and why.Share yours at <a href='http://%s/'>NPR's Dinnertime Confessional</a>.</p>" % (
+    caption = "<p class='message'>%s</p><p class='signature-name'>Initialed,<br/>%s from %s</p><p class='footnote'>Dinner is hard. We want to know what's on your family's table, and why. Share yours at <a href='http://%s/'>NPR's Dinnertime Confessional</a>.</p>" % (
         strip_breaks(strip_html(request.form['message'])),
         strip_html(request.form['signed_name']),
         strip_html(request.form['location']),
@@ -66,38 +65,31 @@ def _post_to_tumblr():
         oauth_token=os.environ['TUMBLR_OAUTH_TOKEN'],
         oauth_token_secret=os.environ['TUMBLR_OAUTH_TOKEN_SECRET'])
 
-    file_path = '/upload/%s/%s_%s' % (
-        'family-meal',
-        time.mktime(datetime.datetime.now().timetuple()),
-        secure_filename(request.files['image'].filename.replace(' ', '-'))
-    )
+    # file_path = '/upload/%s/%s_%s' % (
+    #     'family-meal',
+    #     time.mktime(datetime.datetime.now().timetuple()),
+    #     secure_filename(request.files['image'].filename.replace(' ', '-'))
+    # )
 
-    with open('/tmp%s' % file_path, 'w') as f:
-        f.write(request.files['image'].read())
+    # with open('/tmp%s' % file_path, 'w') as f:
+    #     f.write(request.files['image'].read())
+
+    # params = {
+    #     "type": "photo",
+    #     "caption": caption,
+    #     "tags": "food,dinner,plate,confession,crunchtime,npr",
+    #     "source": "http://%s%s" % (app_config.SERVERS[0], file_path)
+    # }
 
     params = {
-        'type': "photo",
-        'caption': caption,
-        'tags': "food,dinner,plate,confession,crunchtime,npr",
-        'source': "http://%s%s" % (app_config.SERVERS[0], file_path)
+        "type": "photo",
+        "source": "http://54.245.198.194/upload/family-meal/1362776701.0_IMG_8482.jpg"
     }
 
-    print params
-
-    # try:
     tumblr_post = t.post('post', blog_url=app_config.TUMBLR_URL, params=params)
     tumblr_url = u"http://%s/%s" % (app_config.TUMBLR_URL, tumblr_post['id'])
-    # logger.info('200 %s' % tumblr_url)
 
     return redirect('%s#posts' % tumblr_url, code=301)
-
-        # except TumblpyError, e:
-        #     logger.error('%s %s' % (e.error_code, e.msg))
-        #     return 'TUMBLR ERROR'
-
-    # except Exception, e:
-    #     logger.error('%s' % e)
-    #     return 'ERROR'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8001, debug=app_config.DEBUG)
