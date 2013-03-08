@@ -77,12 +77,8 @@ def _post_to_tumblr():
         secure_filename(request.files['image'].filename.replace(' ', '-'))
     )
 
-    print '/tmp%s' % file_path
-
     with open('/tmp%s' % file_path, 'w') as f:
         f.write(request.files['image'].read())
-
-    print 'http://%s%s' % (app_config.SERVERS[0], file_path)
 
     params = {
         'type': u"photo",
@@ -90,6 +86,8 @@ def _post_to_tumblr():
         'tags': u"food,dinner,plate,confession,crunchtime,npr",
         'source': u"http://%s%s" % (app_config.SERVERS[0], file_path)
     }
+
+    print params
 
     # try:
     tumblr_post = t.post('post', blog_url=app_config.TUMBLR_URL, params=params)
