@@ -53,12 +53,7 @@ def _post_to_tumblr():
         return value.replace('\n', '<br />')
 
 # try:
-    caption = u"""
-        <p class='message'>%s</p>
-        <p class='signature-name'>Initialed,<br/>%s from %s</p>
-        <p class='footnote'>Dinner is hard. We want to know what's on your family's table, and why.
-        Share yours at <a href='http://%s/'>NPR's Dinnertime Confessional</a>.</p>
-    """ % (
+    caption = u"<p class='message'>%s</p><p class='signature-name'>Initialed,<br/>%s from %s</p><p class='footnote'>Dinner is hard. We want to know what's on your family's table, and why.Share yours at <a href='http://%s/'>NPR's Dinnertime Confessional</a>.</p>" % (
         strip_breaks(strip_html(request.form['message'])),
         strip_html(request.form['signed_name']),
         strip_html(request.form['location']),
@@ -81,10 +76,10 @@ def _post_to_tumblr():
         f.write(request.files['image'].read())
 
     params = {
-        'type': u"photo",
+        'type': "photo",
         'caption': caption,
-        'tags': u"food,dinner,plate,confession,crunchtime,npr",
-        'source': u"http://%s%s" % (app_config.SERVERS[0], file_path)
+        'tags': "food,dinner,plate,confession,crunchtime,npr",
+        'source': "http://%s%s" % (app_config.SERVERS[0], file_path)
     }
 
     print params
