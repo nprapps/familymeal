@@ -24,7 +24,7 @@ The project contains the following folders and important files:
 * ``www`` -- Static and compiled assets to be deployed (a.k.a. "the output")
 * ``www/test`` -- Javascript tests and supporting files
 * ``app.py`` -- A [Flask](http://flask.pocoo.org/) app for rendering the project locally.
-* ``upload_app.py`` -- A Flask](http://flask.pocoo.org/) app for writing uploaded data to Tumblr via the V2 API.
+* ``upload_app.py`` -- A [Flask](http://flask.pocoo.org/) app for writing uploaded data to Tumblr via the V2 API.
 * ``app_config.py`` -- Global project configuration for scripts, deployment, etc.
 * ``fabfile.py`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands automating setup and deployment
 
