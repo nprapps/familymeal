@@ -24,7 +24,7 @@ S3_BUCKETS = []
 SERVERS = []
 DEBUG = True
 
-TUMBLR_KEY = 'Cxp2JzyA03QxmQixf7Fee0oIYaFtBTTHKzRA0AveHlh094bwDH'
+TUMBLR_KEY = ''
 
 PROJECT_DESCRIPTION = 'This is where the description would go.'
 SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], DEPLOYED_NAME)

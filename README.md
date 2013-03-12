@@ -53,8 +53,22 @@ Project secrets
 
 Project secrets should **never** be stored in ``app_config.py`` or anywhere else in the repository. They will be leaked to the client if you do. Instead, always store passwords, keys, etc. in environment variables and document that they are needed here in the README.
 
-In order to use this app, you will need
+This project, like other NPR apps, requires you to export your AWS access key ID and your AWS secret access key as environment variables so that it can write to your S3 bucket.
 
+```
+AWS_SECRET_ACCESS_KEY=1234
+AWS_ACCESS_KEY_ID=ABCD
+```
+
+Additionally, this particular application uses the Tumblr V2 API. If you are starting from scratch, you need to [register an application](http://www.tumblr.com/oauth/apps) with Tumblr and then do ``fab generate_new_oauth_tokens`` to get the four required tokens.
+
+Put your Tumblr consumer key in ``app_config.py`` as TUMBLR_KEY and then export the OAuth token, the OAuth token secret and the application secret as environment variables.
+
+```
+TUMBLR_OAUTH_TOKEN=1234
+TUMBLR_OAUTH_TOKEN_SECRET=1234
+TUMBLR_APP_SECRET=1234
+```
 
 Run the project locally
 -----------------------
